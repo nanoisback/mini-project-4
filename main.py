@@ -3,8 +3,8 @@ flight_data = {}    # store flight data
 passenger_storage = {}  # store passenger data: name, age, passport id, flight, seat
 
 class Flight:
-    def __init__(self, id, public_id, departure, destination, departure_time, aircraft):
-        self.__id = id
+    def __init__(self, public_id, departure, destination, departure_time, aircraft):
+        self.__id = str(ord(departure[0].lower())) + str(ord(destination[0].lower())) + str(departure_time) + str(aircraft[1::])
         self.public = public_id
         self.depart = departure
         self.des = destination
@@ -19,6 +19,9 @@ class Flight:
         else:   # B787
             flight_data[self.public] = [self.public, self.depart, self.des, self.time, 28, 35, 211, 0] # 28 business, 35 prem economy, 211 economy, 0 reserved
     
+    def get_in_id(self):    # to get internal id, this is a getter method
+        return self.__id
+
 class Passenger:
     def __init__(self, name, age, passport_id, seat_class = '', flight = ''): # input passenger info
         self.name = name
@@ -39,18 +42,39 @@ def Search(keyword, kind):    # use keyword to search for flight, might be anyth
     
     elif kind == "departure":
         for i in range(0, len(flight_data)):
-            if flight_data[i][1] == keyword:    # search by departure place
-                return flight_data[i]
+            if keyword in flight_data[i][1]:    # search by departure place
+                print(f'Flight number: {flight_data[i][0]}')
+                print(f'Departure: {flight_data[i][1]}')
+                print(f'Arrival: {flight_data[i][2]}')
+                print(f'Departure time: {flight_data[i][3]}')
+                print(f'Business seats left: {flight_data[i][4]}')
+                print(f'Premium economy seats left: {flight_data[i][5]} seats')
+                print(f'Economy seats left: {flight_data[i][6]} seats')
+                print(f'Booked seats: {flight_data[i][7]} seats')
             
     elif kind == "arrival":
         for i in range(0, len(flight_data)):
-            if flight_data[i][2] == keyword:    # search by destination
-                return flight_data[i]
+            if keyword in flight_data[i][2]:    # search by destination
+                print(f'Flight number: {flight_data[i][0]}')
+                print(f'Departure: {flight_data[i][1]}')
+                print(f'Arrival: {flight_data[i][2]}')
+                print(f'Departure time: {flight_data[i][3]}')
+                print(f'Business seats left: {flight_data[i][4]}')
+                print(f'Premium economy seats left: {flight_data[i][5]} seats')
+                print(f'Economy seats left: {flight_data[i][6]} seats')
+                print(f'Booked seats: {flight_data[i][7]} seats')
     
     elif kind == "departure time":
         for i in range(0, len(flight_data)):
-            if flight_data[i][3] == keyword:    # search by departure time
-                return flight_data[i]
+            if keyword in flight_data[i][3]:    # search by departure time
+                print(f'Flight number: {flight_data[i][0]}')
+                print(f'Departure: {flight_data[i][1]}')
+                print(f'Arrival: {flight_data[i][2]}')
+                print(f'Departure time: {flight_data[i][3]}')
+                print(f'Business seats left: {flight_data[i][4]}')
+                print(f'Premium economy seats left: {flight_data[i][5]} seats')
+                print(f'Economy seats left: {flight_data[i][6]} seats')
+                print(f'Booked seats: {flight_data[i][7]} seats')
 
 class Reservation(Passenger):
     def __init__(self, name, age, passport, seat_class, flight_flight):
@@ -120,19 +144,30 @@ class AirlineSystem(Flight):
     def __init__(self):
         pass
     
-    def add_flight(self, id, public_id, departure, destination, departure_time, aircraft):
-        super().__init__(id, public_id, departure, destination, departure_time, aircraft)
+    def add_flight(self, public_id, departure, destination, departure_time, aircraft):
+        super().__init__(public_id, departure, destination, departure_time, aircraft)
     
     def view_flight_details(self, flight_number):
             a = Search(flight_number, 'id')
+            
+            if a[4] + a[5] + a[6] + a[7] == 184:    # find type of aircraft from seats number
+                b = 'A320'
+            elif a[4] + a[5] + a[6] + a[7] == 305:  # we do not store aircraft type in the dictionary
+                b = 'A350'                          # due to security reason
+            else:
+                b = 'B787'
+            ob = Flight(a[0], a[1], a[2], a[3], b)
+            
+            print('Flight internal id (do not leak): ' + ob.get_in_id())
             print(f'Flight number: {a[0]}')
             print(f'Departure: {a[1]}')
             print(f'Arrival: {a[2]}')
             print(f'Departure time: {a[3]}h')
-            print(f'Business class seats left: {a[4]} seats')
+            print(f'Business seats left: {a[4]} seats')
             print(f'Premium economy seats left: {a[5]} seats')
             print(f'Economy seats left: {a[6]} seats')
             print(f'Booked seats: {a[7]} seats')
+
     
     def view_passenger_details(self, passport_number):
         if passport_number in passenger_storage:
@@ -167,8 +202,7 @@ while True:
 
     if choice == '1':
         print("Logging in airline management system...")
-        internal_id = input("Enter internal id: ")
-        flight_number = input("Enter public id: ")
+        flight_number = input("Enter flight number: ")
         departure = input("Enter departure: ")
         destination = input("Enter destination: ")
         departure_time = input("Enter departure time: ")
@@ -187,9 +221,9 @@ while True:
             print("Please enter time from 0 to 24")
         
         else:
-            system.add_flight(internal_id, flight_number, departure, destination, departure_time, aircraft)
+            system.add_flight(flight_number, departure, destination, departure_time, aircraft)
             system.store()
-            print(f"Flight {internal_id} has been created with public ID: {flight_number}, departure: {departure}, arrival: {destination}, departure time: {departure_time}h, aircraft: {aircraft}")
+            print(f"Flight {flight_number} has been created; departure: {departure}, arrival: {destination}, departure time: {departure_time}h, aircraft: {aircraft}")
 
     elif choice == '2':
         name = input("Enter passenger name: ")
@@ -202,7 +236,18 @@ while True:
     elif choice == '3':
         kind = input("Choose type of information you want to search (id/departure/arrival/departure time): ")
         keyword = input("Enter search keyword: ")
-        print(Search(keyword, kind))
+        if kind == 'id':
+            a = Search(keyword, kind)
+            print(f'Flight number: {a[0]}')
+            print(f'Departure: {a[1]}')
+            print(f'Arrival: {a[2]}')
+            print(f'Departure time: {a[3]}')
+            print(f'Business seats left: {a[4]}')
+            print(f'Premium economy seats left: {a[5]} seats')
+            print(f'Economy seats left: {a[6]} seats')
+            print(f'Booked seats: {a[7]} seats')
+        else:
+            Search(keyword, kind)
 
     elif choice == '4':
         flight_number = input("Enter flight number: ")
