@@ -297,4 +297,4 @@ while True:
         sys.exit()
 
     else:
-        print("Invalid choice. Please try again.")  # just in case someone input 8 9 10 or so
+        print("Invalid choice. Please try again.")  # just in case someone input 10 20 90 100 or so
