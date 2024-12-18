@@ -80,7 +80,8 @@ class Reservation(Passenger):
 
 class AirlineSystem(Flight):
     def __init__(self):
-        self.flights = {}
+        # flights dictionary with 2 flights inside by default
+        self.flights = {'KS203': Flight('KS203', 'Ha Noi', 'Ho Chi Minh City', 16, 'A350'), 'KS402': Flight('KS402', 'Seoul Incheon', 'Da Nang', 1, 'B787')}
         self.passengers = {}
 
     def add_flight(self, flight_number, departure, destination, departure_time, aircraft_type):
