@@ -1,4 +1,5 @@
 import sys
+import time
 
 class Passenger:
     def __init__(self, name, age, passport_id, flight = None, seat_class = None):
@@ -75,7 +76,8 @@ class Reservation(Passenger):
 
     def cancel_reservation(self):
         self.flight.cancel_seat(self.seat)
-        print(f"Reservation canceled for {self.name} on flight {self.flight}.")
+        print(f"Reservation canceled for {self.name} on {self.flight.flight_number}.")
+
 
 
 class AirlineSystem(Flight):
@@ -236,6 +238,9 @@ while True:
         if passenger and flight:
             reservation = Reservation(passenger.name, passenger.age, passenger.passport_id, flight, seat_class)
             reservation.cancel_reservation()
+            flight.cancel_seat(seat_class)
+            passenger.flight = None
+            passenger.seat = None
         else:
             print("Passenger or flight not found.")
 
@@ -264,6 +269,7 @@ while True:
 
     elif choice == '9':
         print("Exiting the system. Goodbye!")
+        time.sleep(10)
         sys.exit()
 
     else:
