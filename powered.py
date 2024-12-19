@@ -150,6 +150,8 @@ class AirlineSystem(Flight):
             del self.flights[id]         # airline staff can delete flights. The flight will be delete out of flights dictionary
         except:
             print("Flight not found")
+        else:
+            print(f"Flight {id} cancelled successfully")
     
     def book(self, thing):
         self.passengers[thing.passport_id] = thing
@@ -257,7 +259,6 @@ while True:
         print('Logging in airline management system...')
         id = input("Enter flight number: ")
         system.cancel_flight(id)
-        print(f"Flight {id} cancelled successfully")
 
     elif choice == '9':
         print("Exiting the system. Goodbye!")
