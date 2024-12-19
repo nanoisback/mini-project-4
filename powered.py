@@ -69,13 +69,13 @@ class Reservation(Passenger):
 
     def confirm_reservation(self):
         if self.flight.book_seat(self.seat):
-            print(f"Reservation confirmed for {self.name} on flight {self.flight} in {self.seat} class.")
+            print(f"Reservation confirmed for {self.name} on {self.flight} in {self.seat} class.")
         else:
-            print(f"No available seats in {self.seat} class for flight {self.flight.flight}.")
+            print(f"No available seats in {self.seat} class for {self.flight}.")
 
     def cancel_reservation(self):
         self.flight.cancel_seat(self.seat)
-        print(f"Reservation canceled for {self.name} on flight {self.flight.flight}.")
+        print(f"Reservation canceled for {self.name} on flight {self.flight}.")
 
 
 class AirlineSystem(Flight):
@@ -130,7 +130,7 @@ class AirlineSystem(Flight):
     def search_flights(self, flight_number = None, destination = None, departure = None):
         results = []
         for flight in self.flights.values():
-            if (flight_number and flight.flight_number == flight_number) or (destination and flight.destination == destination) or (departure and flight.departure == departure):
+            if (flight_number and flight.flight_number in flight_number) or (destination and flight.destination in destination) or (departure and flight.departure in departure):
                 results.append(flight)
         if results:
             for flight in results:
@@ -174,11 +174,11 @@ while True:
 
     if choice == '1':
         print("Logging in airline management system...")
-        flight_number = input("Enter flight number: ")
-        departure = input("Enter departure location: ")
-        destination = input("Enter destination: ")
+        flight_number = input("Enter flight number: ").upper()
+        departure = input("Enter departure location: ").capitalize()
+        destination = input("Enter destination: ").capitalize()
         departure_time = input("Enter departure time: ")
-        aircraft_type = input("Enter aircraft type (A320/A350/B787): ")
+        aircraft_type = input("Enter aircraft type (A320/A350/B787): ").upper()
         
         try:
             departure_time = int(departure_time)
@@ -204,7 +204,7 @@ while True:
 
     elif choice == '3':
         print("Logging in airline management system...")
-        flight_number = input("Enter flight number: ")
+        flight_number = input("Enter flight number: ").upper()
         system.view_flight_details(flight_number)
 
     elif choice == '4':
@@ -214,8 +214,8 @@ while True:
 
     elif choice == '5':
         passport_id = input("Enter passenger passport ID: ")
-        flight_number = input("Enter flight number: ")
-        seat_class = input("Enter seat class (Business/Premium Economy/Economy): ")
+        flight_number = input("Enter flight number: ").upper()
+        seat_class = input("Enter seat class (Business/Premium Economy/Economy): ").capitalize()
         passenger = system.passengers.get(passport_id)
         flight = system.flights.get(flight_number)
         if passenger and flight:
@@ -227,7 +227,7 @@ while True:
 
     elif choice == '6':
         passport_id = input("Enter passenger passport ID: ")
-        flight_number = input("Enter flight number: ")
+        flight_number = input("Enter flight number: ").upper()
         seat_class = input("Enter seat class (Business/Premium Economy/Economy): ")
         passenger = system.passengers.get(passport_id)
         flight = system.flights.get(flight_number)
@@ -244,20 +244,20 @@ while True:
         print("3. Departure")
         search_choice = input("Enter your choice: ")
         if search_choice == '1':
-            flight_number = input("Enter flight number: ")
+            flight_number = input("Enter flight number: ").upper()
             system.search_flights(flight_number = flight_number)
         elif search_choice == '2':
-            destination = input("Enter destination: ")
+            destination = input("Enter destination: ").capitalize()
             system.search_flights(destination = destination)
         elif search_choice == '3':
-            departure = input("Enter departure location: ")
+            departure = input("Enter departure location: ").capitalize()
             system.search_flights(departure = departure)
         else:
             print("Invalid choice.")
 
     elif choice == '8':
         print('Logging in airline management system...')
-        id = input("Enter flight number: ")
+        id = input("Enter flight number: ").upper()
         system.cancel_flight(id)
 
     elif choice == '9':
