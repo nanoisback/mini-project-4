@@ -81,7 +81,7 @@ class Reservation(Passenger):
 class AirlineSystem(Flight):
     def __init__(self):
         # flights dictionary with 2 flights inside by default
-        self.flights = {'KS203': Flight('KS203', 'Ha Noi', 'Ho Chi Minh City', 16, 'A350'), 'KS402': Flight('KS402', 'Seoul Incheon', 'Da Nang', 1, 'B787')}
+        self.flights = {'KS203': Flight('KS203', 'Ha noi', 'Ho chi minh city', 16, 'A350'), 'KS402': Flight('KS402', 'Seoul incheon', 'Da nang', 1, 'B787')}
         self.passengers = {}
 
     def add_flight(self, flight_number, departure, destination, departure_time, aircraft_type):
@@ -130,7 +130,7 @@ class AirlineSystem(Flight):
     def search_flights(self, flight_number = None, destination = None, departure = None):
         results = []
         for flight in self.flights.values():
-            if (flight_number and flight.flight_number in flight_number) or (destination and flight.destination in destination) or (departure and flight.departure in departure):
+            if (flight_number and flight.flight_number == flight_number) or (destination and flight.destination == destination) or (departure and flight.departure == departure):
                 results.append(flight)
         if results:
             for flight in results:
@@ -142,6 +142,8 @@ class AirlineSystem(Flight):
                 print(f"Premium economy seats left: {flight.premium_economy_seats} seats")
                 print(f"Economy seats left: {flight.economy_seats} seats")
                 print(f"Booked seats: {flight.reserved_seats} seats")
+                print("----------------------------------------------")
+                print('')
         else:
             print("No flights found")
 
